@@ -1,0 +1,35 @@
+---
+- name: Pizzeria Server Setup
+  hosts: pizzeria
+  become: yes
+  vars:
+    pizzeria_dir: /opt/pizzeria
+    owner_name: Adonis
+    packages: 
+      - tree
+      - wget
+      - nmap
+
+  tasks:
+    - name: Ensure packages are installed
+      dnf:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ packages }}"
+
+    - name: Create pizzeria directory
+      file:
+        path: "{{ pizzeria_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Create a welcome file
+      copy:
+        content: "Welcome to {{ owner_name }}' Pizzeria Server!\n"
+        dest: "{{ pizzeria_dir }}/welcome.txt"
+          
+    - name: Create ops message on server2 only
+      copy:
+        content: "This is the DNS server - handle with care!\n"
+        dest: /opt/pizzeria/server2_note.txt
+      when: inventory_hostname == "server2"

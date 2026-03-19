@@ -1,0 +1,66 @@
+---
+- name: LVM Provisioning
+  hosts: pizzeria
+  become: true
+  vars:
+    vg_name: vg_pizzeria
+    lv_name: lv_data
+    lv_size: 2g
+    mount_point: /mnt/pizzeria_data
+    fs_type: xfs
+
+  tasks:
+
+    - name: Set target_disk default
+      set_fact:
+        target_disk: ""
+
+    - name: Check if volume group already exists
+      command: vgs {{ vg_name }}
+      register: vg_exists
+      ignore_errors: true
+      changed_when: false
+
+    - name: Find first available unpartitioned disk
+      set_fact:
+        target_disk: "{{ ansible_devices | dict2items |
+          selectattr('value.partitions', 'equalto', {}) |
+          selectattr('value.removable', 'equalto', '0') |
+          selectattr('value.holders', 'equalto', []) |
+          rejectattr('key', 'match', '^dm-') |
+          rejectattr('key', 'match', '^sr') |
+          map(attribute='key') |
+          map('regex_replace', '^', '/dev/') |
+          list | first | default('') }}"
+
+      when: vg_exists.rc != 0
+
+    - name: Warn if no disk found
+      debug:
+        msg: "No unpartitioned disk found on {{ inventory_hostname }} — skipping"
+      when: vg_exists.rc != 0 and target_disk | default('') == ''
+
+    - name: Full LVM Setup
+      block:
+        - name: Show which disk was selected
+          debug:
+            msg: "Selected disk: {{ target_disk }}"
+
+        - name: Partition newly found disk
+          community.general.parted:
+            device: "{{ target_disk }}"
+            number: 1
+            state: present
+            fs_type: xfs
+
+        - name: Read device information from newly created partition
+          community.general.parted:
+            device: "{{ target_disk }}"
+            state: info
+          register: partition_info
+
+        - name: Show partition info
+          debug:
+            msg: "{{ partition_info.partitions }}"
+
+      when: vg_exists.rc != 0 and target_disk | default('') != ''

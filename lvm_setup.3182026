@@ -1,0 +1,46 @@
+---
+- name: Create an LVM
+  hosts: pizzeria
+  become: true
+
+  tasks:
+    - name: Find first available unpartitioned disk
+      set_fact:
+        target_disk: "{{ ansible_devices | dict2items |
+          selectattr('value.partitions', 'equalto', {}) |
+          selectattr('value.removable', 'equalto', '0') |
+          selectattr('value.holders', 'equalto', []) |
+          rejectattr('key', 'match', '^dm-') |
+          rejectattr('key', 'match', '^sr') |
+          map(attribute='key') |
+          map('regex_replace', '^', '/dev/') |
+          list | first | default('') }}"
+
+    - name: Show which disk was selected
+      debug:
+        msg: "Selected disk: {{ target_disk }}"
+
+    - name: Skip remaining tasks if no disk found
+      debug:
+        msg: "No unpartitioned disk found on {{ inventory_hostname }} — skipping LVM setup"
+      when: target_disk == ''
+
+    - name: Partition newly found disk
+      community.general.parted:
+        device: "{{ target_disk }}"
+        number: 1
+        state: present
+        fs_type: xfs
+      when: target_disk != ''
+
+    - name: Read device information from newly created partition
+      community.general.parted:
+        device: "{{ target_disk }}"
+        state: info
+      register: partition_info
+      when: target_disk != ''
+
+    - name: Show partition info
+      debug:
+        msg: "{{ partition_info.partitions }}"
+      when: target_disk != ''

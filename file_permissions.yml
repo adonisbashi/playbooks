@@ -1,0 +1,33 @@
+---
+- name: Change File Permissions
+  hosts: pizzeria
+  become: true
+
+  tasks:
+    - name: Create a directory for pizzeria orders
+      file:
+        path: /opt/pizzeria/orders
+        state: directory
+
+    - name: Set ownership of pizzeria orders directory
+      file:
+        path: /opt/pizzeria/orders
+        owner: ado
+        group: ado
+
+    - name: Set directory permissions for pizzeria orders
+      file:
+        path: /opt/pizzeria/orders
+        mode: '0755'
+
+    - name: Create active orders file
+      copy:
+        content: "Here are all the currently active orders!\n"
+        dest: /opt/pizzeria/orders/active_orders.txt
+
+    - name: Change permissions for active orders file
+      file:
+        path: /opt/pizzeria/orders/active_orders.txt
+        owner: ado
+        group: ado
+        mode: '0644' 

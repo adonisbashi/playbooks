@@ -1,0 +1,25 @@
+---
+- name: Add ulimits for users
+  hosts: pizzeria
+  become: true
+
+  tasks:
+    - name: Add soft limit for open files for user
+      community.general.pam_limits:
+        domain: ado
+        limit_type: soft
+        limit_item: nofile
+        value: 4096
+
+    - name: Add hard limit for open files for user
+      community.general.pam_limits:
+        domain: ado
+        limit_type: hard
+        limit_item: nofile
+        value: 8192
+
+    - name: Apply limits to current systemd user session
+      shell: systemctl restart user@{{ ansible_user_uid }}.service
+      become: true
+
+
