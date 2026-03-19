@@ -65,8 +65,8 @@
 
         - name:  Create physical volume and volume group
           community.general.lvg:
-            vg: vg_pizzeria
             pvs: "{{ target_disk }}"
+            vg: pizzeria_data
             pesize: 5G
 
       when: vg_exists.rc != 0 and target_disk | default('') != ''
