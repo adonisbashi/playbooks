@@ -63,10 +63,18 @@
           debug:
             msg: "{{ partition_info.partitions }}"
 
+        - name: Set target partition dynamically
+          set_fact:
+            target_partition: "{{ target_disk }}{{ partition_info.partitions[0].num }}"
+
+        - name: Show selected partition
+          debug:
+            msg: "Target partition: {{ target_partition }}"
+
         - name:  Create physical volume and volume group
           community.general.lvg:
-            vg: vg_name
-            pvs: "{{ target_disk }}"
-            pesize: 5G
+            vg: "{{ vg_name }}"
+            pvs: "{{ target_partition }}"
+            pesize: 4
 
       when: vg_exists.rc != 0 and target_disk | default('') != ''
