@@ -46,8 +46,6 @@
         target_partition: "/dev/{{ ansible_devices[target_disk | basename]['partitions'].keys() | list | first }}"
       when: target_disk != '' and disk_has_partitions
 
-      when: vg_exists.rc != 0
-
     - name: Warn if no disk found
       debug:
         msg: "No unpartitioned disk found on {{ inventory_hostname }} — skipping"
