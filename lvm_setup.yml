@@ -14,6 +14,8 @@
     - name: Set target_disk default
       set_fact:
         target_disk: ""
+        target_partition: ""
+        disk_has_partitions: false
 
     - name: Check if volume group already exists
       command: vgs {{ vg_name }}
@@ -32,6 +34,17 @@
           map(attribute='key') |
           map('regex_replace', '^', '/dev/') |
           list | first | default('') }}"
+      when: vg_exists.rc != 0
+
+    - name: Check if disk already has partitions
+      set_fact:
+        disk_has_partitions: "{{ ansible_devices[target_disk | basename]['partitions'] != {} }}"
+      when: target_disk != ''
+
+    - name: Find existing partition on already-partitioned disk
+      set_fact:
+        target_partition: "/dev/{{ ansible_devices[target_disk | basename]['partitions'].keys() | list | first }}"
+      when: target_disk != '' and disk_has_partitions
 
       when: vg_exists.rc != 0
 
