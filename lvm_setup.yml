@@ -126,14 +126,14 @@
         #     state: directory
         #     mode: '0755'
 
-        - name: Get UUID of logical volume
-          command: blkid -s UUID -o value /dev/{{ vg_name }}/{{ lv_name }}
-          register: lv_uuid
-          changed_when: false
+        # - name: Get UUID of logical volume
+        #   command: blkid -s UUID -o value /dev/{{ vg_name }}/{{ lv_name }}
+        #   register: lv_uuid
+        #   changed_when: false
 
-        - name: Show UUID
-          debug:
-            msg: "LV UUID: {{ lv_uuid.stdout }}"
+        # - name: Show UUID
+        #   debug:
+        #     msg: "LV UUID: {{ lv_uuid.stdout }}"
 
         # - name: Mount filesystem and edit /etc/fstab with new entry
         #   ansible.posix.mount:
@@ -162,7 +162,16 @@
         path: "{{ mount_point }}"
         state: directory
         mode: '0755'
-      when: lv_exists.rc == 0        
+      when: lv_exists.rc == 0  
+
+    - name: Get UUID of logical volume
+      command: blkid -s UUID -o value /dev/{{ vg_name }}/{{ lv_name }}
+      register: lv_uuid
+      changed_when: false
+
+    - name: Show UUID
+      debug:
+        msg: "LV UUID: {{ lv_uuid.stdout }}"            
 
     - name: Mount filesystem and edit /etc/fstab with new entry
       ansible.posix.mount:
