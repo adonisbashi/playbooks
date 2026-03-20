@@ -36,14 +36,16 @@
           list | first | default('') }}"
       when: vg_exists.rc != 0
 
-    - name: Find disk with existing partition not yet in LVM
+    - name: Find first partition not yet in any LVM volume group
       set_fact:
-        target_disk: "{{ ansible_devices | dict2items |
+        target_partition: "{{ ansible_devices | dict2items |
           rejectattr('key', 'match', '^dm-') |
           rejectattr('key', 'match', '^sr') |
           rejectattr('key', 'match', '^sda') |
+          map(attribute='value.partitions') |
+          map('dict2items') |
+          flatten |
           selectattr('value.holders', 'equalto', []) |
-          selectattr('value.removable', 'equalto', '0') |
           map(attribute='key') |
           map('regex_replace', '^', '/dev/') |
           list | first | default('') }}"
