@@ -36,6 +36,19 @@
           list | first | default('') }}"
       when: vg_exists.rc != 0
 
+    - name: Find disk with existing partition not yet in LVM
+      set_fact:
+        target_disk: "{{ ansible_devices | dict2items |
+          rejectattr('key', 'match', '^dm-') |
+          rejectattr('key', 'match', '^sr') |
+          rejectattr('key', 'match', '^sda') |
+          selectattr('value.holders', 'equalto', []) |
+          selectattr('value.removable', 'equalto', '0') |
+          map(attribute='key') |
+          map('regex_replace', '^', '/dev/') |
+          list | first | default('') }}"
+      when: vg_exists.rc != 0 and target_disk == ''
+
     - name: Check if disk already has partitions
       set_fact:
         disk_has_partitions: "{{ ansible_devices[target_disk | basename]['partitions'] != {} }}"
@@ -63,6 +76,7 @@
             number: 1
             state: present
             fs_type: xfs
+          when: not disk_has_partitions
 
         - name: Read device information from newly created partition
           community.general.parted:
@@ -77,6 +91,7 @@
         - name: Set target partition dynamically
           set_fact:
             target_partition: "{{ target_disk }}{{ partition_info.partitions[0].num }}"
+          when: not disk_has_partitions
 
         - name: Show selected partition
           debug:
@@ -91,8 +106,8 @@
         - name: Create logical volume
           community.general.lvol:
             vg: "{{ vg_name }}"
-            lv: "{{ lv__name }}"
+            lv: "{{ lv_name }}"
             size: "{{ lv_size }}"
             pvs: "{{ target_partition }}"
 
-      when: vg_exists.rc != 0 and target_disk | default('') != ''
+      when: vg_exists.rc != 0 and (target_disk != '' or target_partition != '')
