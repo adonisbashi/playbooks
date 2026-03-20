@@ -78,7 +78,8 @@
             number: 1
             state: present
             fs_type: xfs
-          when: not disk_has_partitions
+          when: not disk_has_partitions and target_disk != ''
+          ignore_errors: true
 
         - name: Read device information from newly created partition
           community.general.parted:
