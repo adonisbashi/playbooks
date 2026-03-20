@@ -86,6 +86,7 @@
             device: "{{ target_disk }}"
             state: info
           register: partition_info
+          when: target_disk != '' and target_partition == ''
 
         - name: Show partition info
           debug:
@@ -94,7 +95,7 @@
         - name: Set target partition dynamically
           set_fact:
             target_partition: "{{ target_disk }}{{ partition_info.partitions[0].num }}"
-          when: not disk_has_partitions
+          when: target_disk != '' and target_partition == ''
 
         - name: Show selected partition
           debug:
