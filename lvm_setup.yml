@@ -88,4 +88,11 @@
             pvs: "{{ target_partition }}"
             pesize: 4
 
+        - name: Create logical volume
+          community.general.lvol:
+            vg: "{{ vg_name }}"
+            lv: "{{ lv__name }}"
+            size: "{{ lv_size }}"
+            pvs: "{{ target_partition }}"
+
       when: vg_exists.rc != 0 and target_disk | default('') != ''
