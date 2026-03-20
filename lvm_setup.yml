@@ -91,15 +91,16 @@
         - name: Show partition info
           debug:
             msg: "{{ partition_info.partitions }}"
+          when: target_disk != '' and target_partition == ''
 
         - name: Set target partition dynamically
           set_fact:
             target_partition: "{{ target_disk }}{{ partition_info.partitions[0].num }}"
           when: target_disk != '' and target_partition == ''
 
-        - name: Show selected partition
+        - name: Show selected disk or partition
           debug:
-            msg: "Target partition: {{ target_partition }}"
+            msg: "Disk: {{ target_disk }} | Partition: {{ target_partition }}"
 
         - name:  Create physical volume and volume group
           community.general.lvg:
