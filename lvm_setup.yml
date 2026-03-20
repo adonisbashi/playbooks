@@ -115,4 +115,32 @@
             size: "{{ lv_size }}"
             pvs: "{{ target_partition }}"
 
+        - name: Create filesystem
+          community.general.filesystem:
+            fstype: "{{ fs_type }}"
+            dev: "/dev/{{ vg_name }}/{{ lv_name }}"
+
+        - name: Create mount point
+          ansible.builtin.file:
+            path: "{{ mount_point }}"
+            state: directory
+            mode: '0755'
+
+        - name: Get UUID of logical volume
+          command: blkid -s UUID -o value /dev/{{ vg_name }}/{{ lv_name }}
+          register: lv_uuid
+          changed_when: false
+
+        - name: Show UUID
+          debug:
+            msg: "LV UUID: {{ lv_uuid.stdout }}"
+
+        - name: Mount filesystem and edit /etc/fstab with new entry
+          ansible.posix.mount:
+            path: "{{ mount_point }}"
+            src: "UUID={{ lv_uuid.stdout }}"
+            fstype: "{{ fs_type }}"
+            state: present
+
+
       when: vg_exists.rc != 0 and (target_disk != '' or target_partition != '')
