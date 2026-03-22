@@ -19,5 +19,5 @@
       ansible.posix.authorized_key:
         user: pizzaops
         state: present
-        key: "{{ lookup('file', 'pub_key') }}"
+        key: "{{ lookup('file', '/home/ado/.ssh/id_rsa.pub') }}"
 
