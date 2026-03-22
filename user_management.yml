@@ -9,7 +9,7 @@
 
     - name: Create user "pizzaops" on all servers
       ansible.builtin.user:
-        name: pizzops
+        name: pizzaops
         comment: Pizza Operations
         group: wheel
         shell: /bin/bash
