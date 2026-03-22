@@ -1,0 +1,23 @@
+---
+- name: User Management Playbook
+  hosts: pizzeria
+  become: true
+  vars:
+    pub_key: /home/ado/.ssh/id_rsa.pub
+
+  tasks:
+
+    - name: Create user "pizzaops" on all servers
+      ansible.builtin.user:
+        name: pizzops
+        comment: Pizza Operations
+        group: wheel
+        shell: /bin/bash
+        create_home: yes
+
+    - name: Deploy SSH public key for keyless entry
+      ansible.posix.authorized_key:
+        user: pizzaops
+        state: present
+        key: "{{ lookup('file', 'pub_key') }}"
+
