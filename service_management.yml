@@ -10,3 +10,10 @@
         name: httpd
         state: present 
       when: inventory_hostname == 'machine1'
+
+    - name: Start and enable HTTPD service if not already started
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: yes
+      when: inventory_hostname == 'machine1'
