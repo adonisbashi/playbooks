@@ -17,12 +17,12 @@
         comment: Pizza Operations
         group: wheel
         shell: /bin/bash
+        password: "{{ new_user_password }}"
         create_home: yes
 
     - name: Deploy SSH public key for keyless entry
       ansible.posix.authorized_key:
         user: pizzaops
-        password: "{{ new_user_password }}"
         state: present
         key: "{{ lookup('file', '/home/ado/.ssh/id_rsa.pub') }}"
 
