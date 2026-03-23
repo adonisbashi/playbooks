@@ -9,4 +9,4 @@
       ansible.builtin.dnf:
         name: httpd
         state: present 
-        when: "'machine2' in pizzeria"
+      when: "'machine2' in pizzeria"
