@@ -4,6 +4,10 @@
   become: true
   vars:
     pub_key: /home/ado/.ssh/id_rsa.pub
+    new_user_password: "$6$mysecretsalt$lAIqaKtrwa2hG66xHSqHhyYLFDW/9MLionBLCoF092sbFTTO0zvAPnY8OOBU8zz0D3qvC7TQzpAZvjYDwU5HP."
+  
+  vars_files:
+    - vars/secrets.yml
 
   tasks:
 
@@ -18,6 +22,7 @@
     - name: Deploy SSH public key for keyless entry
       ansible.posix.authorized_key:
         user: pizzaops
+        password: "{{ new_user_password }}"
         state: present
         key: "{{ lookup('file', '/home/ado/.ssh/id_rsa.pub') }}"
 
