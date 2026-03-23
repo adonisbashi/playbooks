@@ -14,7 +14,7 @@
       ansible.builtin.user:
         name: pizzaops
         comment: Pizza Operations
-        group: wheel
+        groups: wheel
         shell: /bin/bash
         password: "{{ new_user_password }}"
         create_home: yes
