@@ -3,6 +3,9 @@
   hosts: pizzeria
   become: true
 
+  vars_files:
+    - /etc/ansible/hosts
+
   tasks:
 
     - name: Install and start HTTPD
