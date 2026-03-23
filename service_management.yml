@@ -9,4 +9,4 @@
       ansible.builtin.dnf:
         name: httpd
         state: present 
-      when: pizzeria[0]
+      when: inventory_hostname == 'machine1'
