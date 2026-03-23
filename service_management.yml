@@ -3,13 +3,10 @@
   hosts: pizzeria
   become: true
 
-  vars_files:
-    - /etc/ansible/hosts
-
   tasks:
 
     - name: Install and start HTTPD
       ansible.builtin.dnf:
         name: httpd
         state: present 
-      when: inventory_hostname in pizzeria['machine1']
+      when: pizzeria[0]
