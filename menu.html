@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Our Menu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #f5f0e8;
+      --dark: #1a1208;
+      --red: #c0392b;
+      --gold: #b8860b;
+      --muted: #6b5e4e;
+      --border: #d4c9b0;
+    }
+
+    body {
+      background-color: var(--cream);
+      color: var(--dark);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      padding: 60px 20px;
+      background-image:
+        radial-gradient(ellipse at 10% 20%, rgba(192,57,43,0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 80%, rgba(184,134,11,0.06) 0%, transparent 50%);
+    }
+
+    .page {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 60px;
+      animation: fadeDown 0.8s ease both;
+    }
+
+    .eyebrow {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 8vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1.05;
+      color: var(--dark);
+      margin-bottom: 16px;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: var(--muted);
+      font-weight: 300;
+      letter-spacing: 0.03em;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 40px 0;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .divider-icon {
+      color: var(--gold);
+      font-size: 1.1rem;
+    }
+
+    .menu-grid {
+      display: grid;
+      gap: 0;
+    }
+
+    .menu-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 22px 0;
+      border-bottom: 1px solid var(--border);
+      animation: fadeUp 0.6s ease both;
+      transition: background 0.2s;
+      gap: 20px;
+    }
+
+    .menu-item:last-child {
+      border-bottom: none;
+    }
+
+    .item-left { flex: 1; }
+
+    .item-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var(--dark);
+      margin-bottom: 4px;
+    }
+
+    .item-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 300;
+      line-height: 1.5;
+    }
+
+    .item-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: var(--red);
+      white-space: nowrap;
+      font-style: italic;
+    }
+
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 500;
+      margin-top: 48px;
+      margin-bottom: 8px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 60px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 300;
+      letter-spacing: 0.05em;
+      animation: fadeUp 0.8s ease 0.5s both;
+    }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .menu-item:nth-child(1) { animation-delay: 0.1s; }
+    .menu-item:nth-child(2) { animation-delay: 0.18s; }
+    .menu-item:nth-child(3) { animation-delay: 0.26s; }
+    .menu-item:nth-child(4) { animation-delay: 0.34s; }
+    .menu-item:nth-child(5) { animation-delay: 0.42s; }
+    .menu-item:nth-child(6) { animation-delay: 0.50s; }
+    .menu-item:nth-child(7) { animation-delay: 0.58s; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <p class="eyebrow">Farmington Hills, Michigan</p>
+      <h1>Our Menu</h1>
+      <p class="subtitle">Made fresh to order — every pie, every time.</p>
+    </header>
+
+    <div class="divider">
+      <span class="divider-icon">◆</span>
+    </div>
+
+    <p class="section-label">Specialty Pies</p>
+
+    <div class="menu-grid">
+      <div class="menu-item">
+        <div class="item-left">
+          <div class="item-name">BBQ</div>
+          <div class="item-desc">Smoky BBQ sauce, mozzarella, red onion, cilantro</div>
+        </div>
+        <div class="item-price">$16</div>
+      </div>
+
+      <div class="menu-item">
+        <div class="item-left">
+          <div class="item-name">Veggie</div>
+          <div class="item-desc">Roasted peppers, mushrooms, spinach, olives, feta</div>
+        </div>
+        <div class="item-price">$15</div>
+      </div>
+
+      <div class="menu-item">
+        <div class="item-left">
+          <div class="item-name">Supreme</div>
+          <div class="item-desc">Pepperoni, sausage, bell peppers, onions, mushrooms</div>
+        </div>
+        <div class="item-price">$18</div>
+      </div>
+
+      <div class="menu-item">
+        <div class="item-left">
+          <div class="item-name">Buffalo Chicken</div>
+          <div class="item-desc">Buffalo sauce, grilled chicken, mozzarella, ranch drizzle</div>
+        </div>
+        <div class="item-price">$17</div>
+      </div>
+
+      <div class="menu-item">
+        <div class="item-left">
+          <div class="item-name">Meat Lovers</div>
+          <div class="item-desc">Pepperoni, sausage, bacon, ham, ground beef</div>
+        </div>
+        <div class="item-price">$19</div>
+      </div>
+
+      <div class="menu-item">
+        <div class="item-left">
+          <div class="item-name">Chicken Bacon Ranch</div>
+          <div class="item-desc">Ranch base, grilled chicken, bacon, mozzarella, tomato</div>
+        </div>
+        <div class="item-price">$17</div>
+      </div>
+
+      <div class="menu-item">
+        <div class="item-left">
+          <div class="item-name">Hot Honey Ricotta</div>
+          <div class="item-desc">Ricotta, mozzarella, hot honey drizzle, fresh basil</div>
+        </div>
+        <div class="item-price">$18</div>
+      </div>
+    </div>
+
+    <div class="divider" style="margin-top: 40px;">
+      <span class="divider-icon">◆</span>
+    </div>
+
+    <footer>All pies available in 12" or 16" &nbsp;·&nbsp; Gluten-free crust available upon request</footer>
+  </div>
+</body>
+</html>
