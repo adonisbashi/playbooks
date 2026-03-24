@@ -18,6 +18,14 @@
         enabled: yes
       when: inventory_hostname == 'machine2'
 
+    - name: Open firewall for HTTP on machine2
+      ansible.posix.firewalld:
+        service: http
+        permanent: true
+        state: enabled
+        immediate: true
+      when: inventory_hostname == 'machine2'
+
     - name: Install bind
       ansible.builtin.dnf:
         name: bind
