@@ -20,7 +20,7 @@
 
     - name: Install bind
       ansible.builtin.dnf:
-        name: named
+        name: bind
         state: present 
       when: inventory_hostname == 'machine3'
 
