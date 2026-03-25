@@ -16,36 +16,36 @@
         name: httpd
         state: started
         enabled: yes
-      when: inventory_hostname == 'machine2'
+      when: inventory_hostname == 'machine1'
 
-    - name: Open firewall for HTTP on machine2
+    - name: Open firewall for HTTP on machine1
       ansible.posix.firewalld:
         service: http
         permanent: true
         state: enabled
         immediate: true
-      when: inventory_hostname == 'machine2'
+      when: inventory_hostname == 'machine1'
 
     - name: Install bind
       ansible.builtin.dnf:
         name: bind
         state: present 
-      when: inventory_hostname == 'machine3'
+      when: inventory_hostname == 'machine2'
 
     - name: Start and enable bind service if not already started
       ansible.builtin.service:
         name: named
         state: started
         enabled: yes
-      when: inventory_hostname == 'machine3'
+      when: inventory_hostname == 'machine2'
 
-    - name: Add HTML page to machine 2 only
+    - name: Add HTML page to machine 1 only
       ansible.builtin.copy:
         src: ~/playbooks/menu.html
         dest: /var/www/html
         owner: ado
         group: ado
         mode: '0644'
-      when: inventory_hostname == 'machine2'
+      when: inventory_hostname == 'machine1'
       
         
