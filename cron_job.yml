@@ -20,5 +20,5 @@
       ansible.builtin.cron:
         name: "check disk usage"
         minute: "0"
-        hour: "0"
+        hour: "2"
         job: 'df -h >> "{{ log_path }}"'
