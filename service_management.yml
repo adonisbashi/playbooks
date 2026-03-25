@@ -43,8 +43,8 @@
       ansible.builtin.copy:
         src: ~/playbooks/menu.html
         dest: /var/www/html/menu.html
-        owner: ado
-        group: ado
+        owner: root
+        group: root
         mode: '0644'
       when: inventory_hostname == 'machine1'
       
