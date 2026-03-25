@@ -3,13 +3,22 @@
   hosts: pizzeria
   become: true
 
+  vars:
+    log_path: /var/log/disk_check.log
+
   tasks:
   
     - name: Ensure logging file exists with correct permissions
       ansible.builtin.file:
-        path: /var/log/disk_check.log
+        path: "{{ log_path }}"
         owner: root
         group: syslog
         mode: '0644'
         state: touch
 
+    - name: Deploy cron job to check disk usage daily
+      ansible.builtin.cron:
+        name: "check disk usage"
+        minute: "0"
+        hour: "2"
+        job: 'df -h >> "{{ log_path }}"'
