@@ -1,0 +1,15 @@
+---
+- name: Deploy disk check cron job every day at 2AM and log results
+  hosts: pizzeria
+  become: true
+
+  tasks:
+  
+    - name: Ensure logging file exists with correct permissions
+      ansible.builtin.file:
+        path: /var/log/disk_check.log
+        owner: root
+        group: syslog
+        mode: '0644'
+        state: touch
+
