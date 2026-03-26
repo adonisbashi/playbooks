@@ -48,7 +48,7 @@
           ansible.posix.mount:
             src: "{{ nfs_ip }}:{{ nfs_export_path }}"
             path: "{{ nfs_mount_point }}"
-            opts: "rw,sync,no_root_squash"
+            opts: "rw,sync"
             state: mounted
             fstype: nfs
 
