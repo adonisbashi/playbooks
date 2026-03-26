@@ -4,7 +4,7 @@
   become: true
 
   tasks:
-    - name: Full NFS setup and configuration across servers
+    - name: NFS setup and configuration for machine1
       block:
         
         - name: Install and configure NFS on machine1 (host-server)
@@ -30,7 +30,8 @@
             enabled: yes
 
       when: inventory_hostname == 'machine1'
-
+      
+    - name: Install and configure NFS on machine2
       block:
 
         - name: Install and configure NFS on machine2 (client-server)
