@@ -41,8 +41,8 @@
 
     - name: Add HTML page to machine 1 only
       ansible.builtin.copy:
-        src: ~/playbooks/menu.html
-        dest: /var/www/html/index.html
+        src: "{{ html_source }}"
+        dest: "{{ html_dest }}"
         owner: root
         group: root
         mode: '0644'
