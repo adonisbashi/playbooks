@@ -20,7 +20,7 @@
         - name: Add entry to /etc/exports for nfs server
           ansible.builtin.lineinfile:
             path: /etc/exports
-            line: "{{ nfs_ip }} {{ nfs_export_path }} {{ nfs_export_options }}"
+            line: "{{ nfs_export_path }} {{ nfs_export_options }}"
             insertafter: EOF
 
         - name: Start and enable NFS server
