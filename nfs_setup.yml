@@ -29,6 +29,17 @@
             state: started
             enabled: yes
 
+        - name: Open firewall for nfs, mountd, and rpcbind
+          ansible.posix.firewalld:
+            service: "{{ item }}"
+            permanent: true
+            state: enabled
+            immediate: true
+          loop:
+            - nfs
+            - mountd
+            - rpcbind
+
       when: inventory_hostname == 'machine1'
 
     - name: Install and configure NFS on machine2
