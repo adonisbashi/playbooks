@@ -9,7 +9,7 @@
       ansible.builtin.dnf:
         name: httpd
         state: present 
-      when: inventory_hostname == 'machine2'
+      when: inventory_hostname == 'machine1'
 
     - name: Start and enable HTTPD service if not already started
       ansible.builtin.service:
