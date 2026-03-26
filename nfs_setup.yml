@@ -14,7 +14,7 @@
 
         - name: Create shared data directory
           ansible.builtin.file:
-            path: /shared_data
+            path: "{{ nfs_export_path }}"
             state: directory
 
         - name: Add entry to /etc/exports for nfs server
@@ -29,5 +29,26 @@
             state: started
             enabled: yes
 
-
       when: inventory_hostname == 'machine1'
+
+      block:
+
+        - name: Install and configure NFS on machine2 (client-server)
+          ansible.builtin.dnf:
+            name: nfs-utils
+            state: present
+
+        - name: Create mount point for NFS
+          ansible.builtin.file:
+            path: "{{ nfs_mount_point }}"
+            state: directory
+
+        - name: Mount NFS share onto mount point
+          ansible.posix.mount:
+            src: "{{ nfs_ip }}:{{ nfs_export_path }}"
+            path: "{{ nfs_mount_point }}"
+            opts: rw,sync,no_root_squash
+            state: mounted
+            fstype: nfs
+
+      when: inventory_hostname == 'machine2'
