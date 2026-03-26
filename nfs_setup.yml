@@ -1,0 +1,8 @@
+---
+- name: Install NFS packages and mount directories across servers
+  hosts: pizzeria
+  become: true
+
+  tasks:
+
+    - name: Install 
