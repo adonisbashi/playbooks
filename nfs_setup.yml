@@ -15,7 +15,9 @@
         - name: Create shared data directory
           ansible.builtin.file:
             path: "{{ nfs_export_path }}"
-            mode: '0755'
+            owner: ado
+            group: ado
+            mode: '0777'
             state: directory
 
         - name: Add entry to /etc/exports for nfs server
@@ -60,7 +62,9 @@
         - name: Create mount point for NFS
           ansible.builtin.file:
             path: "{{ nfs_mount_point }}"
-            mode: '0755'
+            owner: ado
+            group: ado
+            mode: '0777'
             state: directory
 
         - name: Mount NFS share onto mount point
