@@ -46,8 +46,8 @@
 
         - name: Mount NFS share onto mount point
           ansible.posix.mount:
+            path: "{{ nfs_mount_point }}"          
             src: "{{ nfs_ip }}:{{ nfs_export_path }}"
-            path: "{{ nfs_mount_point }}"
             opts: "rw,sync"
             state: mounted
             fstype: nfs
