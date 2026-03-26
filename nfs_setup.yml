@@ -29,7 +29,7 @@
             state: started
             enabled: yes
 
-        - name: Open firewall for nfs, mountd, and rpcbind
+        - name: Open firewall for nfs and mountd
           ansible.posix.firewalld:
             service: "{{ item }}"
             permanent: true
@@ -38,7 +38,13 @@
           loop:
             - nfs
             - mountd
-            - rpcbind
+
+        - name: Open firewall port for rpcbind on machine 1
+          ansible.posix.firewalld:
+            port: 111/tcp
+            permanent: true
+            state: enabled
+            immediate: true
 
       when: inventory_hostname == 'machine1'
 
