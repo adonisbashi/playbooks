@@ -18,7 +18,7 @@
             state: touch
 
         - name: Add entry to /etc/exports for nfs server
-          ansible.builtin.file:
+          ansible.builtin.lineinfile:
             path: /etc/exports
             line: "{{ nfs_ip }} {{ nfs_export_path }} {{ nfs_export_options }}"
             insertafter: EOF
