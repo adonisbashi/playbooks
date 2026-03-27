@@ -10,3 +10,5 @@ pub_key: /home/ado/.ssh/id_rsa.pub
 new_user: pizzaops
 new_user_password: "{{ vault_new_user_password }}"
 new_user_shell: /bin/bash
+
+run_httpd: true
