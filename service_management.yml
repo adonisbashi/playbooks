@@ -1,6 +1,6 @@
 ---
 - name: Service Management Playbook
-  hosts: pizzeria
+  hosts: macbookair
   become: true
 
   tasks:
@@ -9,14 +9,14 @@
       ansible.builtin.dnf:
         name: httpd
         state: present 
-      when: inventory_hostname == 'machine1'
+      when: run_httpd | default(false)
 
     - name: Start and enable HTTPD service if not already started
       ansible.builtin.service:
         name: httpd
         state: started
         enabled: yes
-      when: inventory_hostname == 'machine1'
+      when: run_httpd | default(false)
 
     - name: Open firewall for HTTP on machine1
       ansible.posix.firewalld:
@@ -24,20 +24,20 @@
         permanent: true
         state: enabled
         immediate: true
-      when: inventory_hostname == 'machine1'
+      when: run_httpd | default(false)
 
     - name: Install bind
       ansible.builtin.dnf:
         name: bind
         state: present 
-      when: inventory_hostname == 'machine2'
+      when: run_dns | default(false)
 
     - name: Start and enable bind service if not already started
       ansible.builtin.service:
         name: named
         state: started
         enabled: yes
-      when: inventory_hostname == 'machine2'
+      when: run_dns | default(false)
 
     - name: Add HTML page to machine 1 only
       ansible.builtin.copy:
@@ -46,6 +46,6 @@
         owner: root
         group: root
         mode: '0644'
-      when: inventory_hostname == 'machine1'
+      when: run_httpd | default(false)
       
         
