@@ -6,28 +6,28 @@
   tasks:
     - name: Create a directory for pizzeria orders
       file:
-        path: /opt/pizzeria/orders
+        path: "{{ pizza_orders_dir }}"
         state: directory
 
     - name: Set ownership of pizzeria orders directory
       file:
-        path: /opt/pizzeria/orders
+        path: "{{ pizza_orders_dir }}"
         owner: ado
         group: ado
 
     - name: Set directory permissions for pizzeria orders
       file:
-        path: /opt/pizzeria/orders
+        path: "{{ pizza_orders_dir }}"
         mode: '0755'
 
     - name: Create active orders file
       copy:
         content: "Here are all the currently active orders!\n"
-        dest: /opt/pizzeria/orders/active_orders.txt
+        dest: "{{ pizza_orders_file }}"
 
     - name: Change permissions for active orders file
       file:
-        path: /opt/pizzeria/orders/active_orders.txt
+        path: "{{ pizza_orders_file }}"
         owner: ado
         group: ado
         mode: '0644' 
