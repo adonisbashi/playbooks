@@ -126,6 +126,7 @@
 - name: Get UUID of logical volume
   command: blkid -s UUID -o value /dev/{{ vg_name }}/{{ lv_name }}
   register: lv_uuid
+  ignore_errors: true
   changed_when: false
 
 - name: Show UUID
