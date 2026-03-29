@@ -32,3 +32,11 @@ lv_name: lv_data
 lv_size: 2g
 mount_point: /mnt/pizzeria_data
 fs_type: xfs
+
+# Pizzeria setup
+pizzeria_dir: /opt/pizzeria
+owner_name: Adonis
+packages: 
+  - tree
+  - wget
+  - nmap

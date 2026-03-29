@@ -4,3 +4,7 @@ nfs_client: true
 
 # DNS
 run_dns: true
+
+# Pizzeria setup
+ops_message: true
+dest_ops_message: /opt/pizzeria/server2_note.txt
