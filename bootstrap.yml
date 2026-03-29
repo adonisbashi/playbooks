@@ -21,3 +21,21 @@
         user: ado
         state: present
         key: "{{ lookup('file', pub_key) }}"
+
+    - name: Configure static IP address
+      community.general.nmcli:
+        conn_name: "{{ network_interface }}"
+        ifname: "{{ network_interface }}"
+        type: ethernet
+        ip4: "{{ static_ip }}/24"
+        gw4: "{{ gateway }}"
+        dns4:
+          - "{{ gateway }}"
+          - 8.8.8.8
+        state: present
+        autoconnect: true
+
+    - name: Bring connection up
+      ansible.builtin.command:
+        cmd: nmcli connection up "{{ network_interface }}"
+      changed_when: false
