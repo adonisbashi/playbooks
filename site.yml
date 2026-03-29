@@ -1,0 +1,16 @@
+---
+- name: Run all playbooks
+  hosts: pizzeria
+  become: true
+
+  roles:
+    - role: pizzeria_setup
+    - role: users
+    - role: hardening
+    - role: ulimits
+    - role: cron
+    - role: file_permissions
+    - role: lvm
+    - role: httpd
+    - role: dns
+    - role: nfs
