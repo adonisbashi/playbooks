@@ -2,12 +2,6 @@
 - name: LVM Provisioning
   hosts: pizzeria
   become: true
-  vars:
-    vg_name: vg_pizzeria
-    lv_name: lv_data
-    lv_size: 2g
-    mount_point: /mnt/pizzeria_data
-    fs_type: xfs
 
   tasks:
 
