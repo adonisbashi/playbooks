@@ -5,6 +5,7 @@
     group: root
     mode: '0644'
     state: touch
+    changed_when: false
 
 - name: Deploy cron job to check disk usage daily
   ansible.builtin.cron:
