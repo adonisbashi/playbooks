@@ -2,3 +2,6 @@
 html_source: ~/playbooks/menu.html
 html_dest: /var/www/html/index.html
 run_httpd: true
+
+# NFS
+nfs_server: true

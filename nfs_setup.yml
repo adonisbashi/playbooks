@@ -4,10 +4,10 @@
   become: true
 
   tasks:
-    - name: NFS setup and configuration for machine1
+    - name: NFS setup and configuration for host server
       block:
         
-        - name: Install and configure NFS on machine1 (host-server)
+        - name: Install and configure NFS on host server
           ansible.builtin.dnf:
             name: nfs-utils
             state: present
@@ -42,19 +42,19 @@
             - nfs
             - mountd
 
-        - name: Open firewall port for rpcbind on machine 1
+        - name: Open firewall port for rpcbind on host server
           ansible.posix.firewalld:
             port: 111/tcp
             permanent: true
             state: enabled
             immediate: true
 
-      when: inventory_hostname == 'machine1'
+      when: nfs_server | default(false)
 
-    - name: Install and configure NFS on machine2
+    - name: Install and configure NFS on client server
       block:
 
-        - name: Install and configure NFS on machine2 (client-server)
+        - name: Install and configure NFS on client server
           ansible.builtin.dnf:
             name: nfs-utils
             state: present
@@ -75,4 +75,4 @@
             state: mounted
             fstype: nfs
 
-      when: inventory_hostname == 'machine2'
+      when: nfs_client | default(true)

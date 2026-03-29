@@ -1,5 +1,6 @@
 # NFS
 nfs_mount_point: /mnt/nfs_share
+nfs_client: true
 
 # DNS
 run_dns: true
