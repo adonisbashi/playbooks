@@ -1,0 +1,72 @@
+- name: NFS setup and configuration for host server
+  block:
+    
+    - name: Install and configure NFS on host server
+      ansible.builtin.dnf:
+        name: nfs-utils
+        state: present
+
+    - name: Create shared data directory
+      ansible.builtin.file:
+        path: "{{ nfs_export_path }}"
+        owner: root
+        group: root
+        mode: '0777'
+        state: directory
+
+    - name: Add entry to /etc/exports for nfs server
+      ansible.builtin.lineinfile:
+        path: /etc/exports
+        line: "{{ nfs_export_path }} {{ nfs_export_options }}"
+        insertafter: EOF
+
+    - name: Start and enable NFS server
+      ansible.builtin.service:
+        name: nfs-server
+        state: started
+        enabled: yes
+
+    - name: Open firewall for nfs and mountd
+      ansible.posix.firewalld:
+        service: "{{ item }}"
+        permanent: true
+        state: enabled
+        immediate: true
+      loop:
+        - nfs
+        - mountd
+
+    - name: Open firewall port for rpcbind on host server
+      ansible.posix.firewalld:
+        port: 111/tcp
+        permanent: true
+        state: enabled
+        immediate: true
+
+  when: nfs_server | default(false)
+
+- name: Install and configure NFS on client server
+  block:
+
+    - name: Install and configure NFS on client server
+      ansible.builtin.dnf:
+        name: nfs-utils
+        state: present
+
+    - name: Create mount point for NFS
+      ansible.builtin.file:
+        path: "{{ nfs_mount_point }}"
+        owner: root
+        group: root            
+        mode: '0777'
+        state: directory
+
+    - name: Mount NFS share onto mount point
+      ansible.posix.mount:
+        path: "{{ nfs_mount_point }}"          
+        src: "{{ nfs_ip }}:{{ nfs_export_path }}"
+        opts: "rw,sync"
+        state: mounted
+        fstype: nfs
+
+  when: nfs_client | default(false)
