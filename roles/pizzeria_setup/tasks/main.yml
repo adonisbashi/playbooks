@@ -1,0 +1,22 @@
+- name: Ensure packages are installed
+  dnf:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ packages }}"
+
+- name: Create pizzeria directory
+  file:
+    path: "{{ pizzeria_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Create a welcome file
+  copy:
+    content: "Welcome to {{ owner_name }}' Pizzeria Server!\n"
+    dest: "{{ pizzeria_dir }}/welcome.txt"
+      
+- name: Create ops message on server2 only
+  copy:
+    content: "This is the DNS server - handle with care!\n"
+    dest: "{{ dest_ops_message }}"
+  when: ops_message | default(false)
