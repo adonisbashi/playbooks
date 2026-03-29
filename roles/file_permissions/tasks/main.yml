@@ -1,0 +1,27 @@
+- name: Create a directory for pizzeria orders
+  ansible.builtin.file:
+    path: "{{ pizza_orders_dir }}"
+    state: directory
+
+- name: Set ownership of pizzeria orders directory
+  ansible.builtin.file:
+    path: "{{ pizza_orders_dir }}"
+    owner: ado
+    group: ado
+
+- name: Set directory permissions for pizzeria orders
+  ansible.builtin.file:
+    path: "{{ pizza_orders_dir }}"
+    mode: '0755'
+
+- name: Create active orders file
+  ansible.builtin.copy:
+    content: "Here are all the currently active orders!\n"
+    dest: "{{ pizza_orders_file }}"
+
+- name: Change permissions for active orders file
+  ansible.builtin.file:
+    path: "{{ pizza_orders_file }}"
+    owner: ado
+    group: ado
+    mode: '0644'
