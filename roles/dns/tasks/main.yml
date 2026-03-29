@@ -1,0 +1,12 @@
+# Conditional: when: run_dns — controlled in site.yml
+
+- name: Install bind
+  ansible.builtin.dnf:
+    name: bind
+    state: present 
+
+- name: Start and enable bind service if not already started
+  ansible.builtin.service:
+    name: named
+    state: started
+    enabled: yes

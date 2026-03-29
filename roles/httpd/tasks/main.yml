@@ -1,4 +1,4 @@
-# Conditional: when: run_httpd | default(false) — controlled in site.yml
+# Conditional: when: run_httpd — controlled in site.yml
 
 - name: Install HTTPD
   ansible.builtin.dnf:
@@ -17,3 +17,11 @@
     permanent: true
     state: enabled
     immediate: true
+
+- name: Add HTML page to machine 1 only
+  ansible.builtin.copy:
+    src: "{{ html_source }}"
+    dest: "{{ html_dest }}"
+    owner: root
+    group: root
+    mode: '0644'
