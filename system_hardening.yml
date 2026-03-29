@@ -8,7 +8,7 @@
     - name: Set vm.swappiness to 10
       ansible.posix.sysctl:
         name: vm.swappiness
-        value: '10'
+        value: "{{ swappiness_value }}"
         sysctl_set: true
         state: present
         reload: true
@@ -16,7 +16,7 @@
     - name: Increase max file size open
       ansible.posix.sysctl:
         name: fs.file-max
-        value: '100000'
+        value: "{{ max_file_value }}"
         sysctl_set: true
         state: present
         reload: true

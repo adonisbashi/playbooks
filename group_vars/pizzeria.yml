@@ -13,3 +13,7 @@ new_user_shell: /bin/bash
 
 # Cron jobs
 log_path: /var/log/disk_check.log
+
+# System hardening
+swappiness_value: '10'
+max_file_value: '100000'
