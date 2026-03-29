@@ -25,3 +25,10 @@ pizza_orders_file: /opt/pizzeria/orders/active_orders.txt
 # Ulimits
 soft_limit_value: 4096
 hard_limit_value: 8192
+
+# LVMs
+vg_name: vg_pizzeria
+lv_name: lv_data
+lv_size: 2g
+mount_point: /mnt/pizzeria_data
+fs_type: xfs

@@ -75,4 +75,4 @@
             state: mounted
             fstype: nfs
 
-      when: nfs_client | default(true)
+      when: nfs_client | default(false)
