@@ -1,0 +1,2 @@
+swappiness_value: '10'
+max_file_value: '100000'
