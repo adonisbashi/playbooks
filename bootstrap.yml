@@ -1,0 +1,23 @@
+---
+- name: Configure new server
+  hosts: pizzeria
+  become: true
+
+  tasks:
+
+    - name: Set hostname for new server
+      ansible.builtin.hostname:
+        name: "{{ new_server_hostname }}"
+        use: systemd
+
+    - name: Configure passwordless sudo for new server
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers
+        line: "ado ALL=(ALL) NOPASSWD: ALL"
+        validate: 'visudo -cf %s'
+
+    - name: Deploy SSH public key for keyless entry
+      ansible.posix.authorized_key:
+        user: ado
+        state: present
+        key: "{{ lookup('file', pub_key) }}"
