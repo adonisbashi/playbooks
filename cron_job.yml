@@ -3,9 +3,6 @@
   hosts: pizzeria
   become: true
 
-  vars:
-    log_path: /var/log/disk_check.log
-
   tasks:
   
     - name: Ensure logging file exists with correct permissions
