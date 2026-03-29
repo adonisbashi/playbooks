@@ -1,0 +1,20 @@
+- name: Install HTTPD
+  ansible.builtin.dnf:
+    name: httpd
+    state: present 
+  #when: run_httpd | default(false)
+
+- name: Start and enable HTTPD service if not already started
+  ansible.builtin.service:
+    name: httpd
+    state: started
+    enabled: yes
+  #when: run_httpd | default(false)
+
+- name: Open firewall for HTTP on machine1
+  ansible.posix.firewalld:
+    service: http
+    permanent: true
+    state: enabled
+    immediate: true
+  #when: run_httpd | default(false)
