@@ -12,5 +12,7 @@
     - role: file_permissions
     - role: lvm
     - role: httpd
+      when: run_httpd
     - role: dns
+      when: run_dns
     - role: nfs
