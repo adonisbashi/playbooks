@@ -1,0 +1,142 @@
+- name: Set target_disk default
+  set_fact:
+    target_disk: ""
+    target_partition: ""
+    disk_has_partitions: false
+
+- name: Check if volume group already exists
+  command: vgs {{ vg_name }}
+  register: vg_exists
+  ignore_errors: true
+  changed_when: false
+
+- name: Find first available unpartitioned disk
+  set_fact:
+    target_disk: "{{ ansible_devices | dict2items |
+      selectattr('value.partitions', 'equalto', {}) |
+      selectattr('value.removable', 'equalto', '0') |
+      selectattr('value.holders', 'equalto', []) |
+      rejectattr('key', 'match', '^dm-') |
+      rejectattr('key', 'match', '^sr') |
+      map(attribute='key') |
+      map('regex_replace', '^', '/dev/') |
+      list | first | default('') }}"
+  when: vg_exists.rc != 0
+
+- name: Find first partition not yet in any LVM volume group
+  set_fact:
+    target_partition: "{{ ansible_devices | dict2items |
+      rejectattr('key', 'match', '^dm-') |
+      rejectattr('key', 'match', '^sr') |
+      rejectattr('key', 'match', '^sda') |
+      map(attribute='value.partitions') |
+      map('dict2items') |
+      flatten |
+      selectattr('value.holders', 'equalto', []) |
+      map(attribute='key') |
+      map('regex_replace', '^', '/dev/') |
+      list | first | default('') }}"
+  when: vg_exists.rc != 0 and target_disk == ''
+
+- name: Check if disk already has partitions
+  set_fact:
+    disk_has_partitions: "{{ ansible_devices[target_disk | basename]['partitions'] != {} }}"
+  when: target_disk != ''
+
+- name: Find existing partition on already-partitioned disk
+  set_fact:
+    target_partition: "/dev/{{ ansible_devices[target_disk | basename]['partitions'].keys() | list | first }}"
+  when: target_disk != '' and disk_has_partitions
+
+- name: Warn if no disk found
+  debug:
+    msg: "No unpartitioned disk found on {{ inventory_hostname }} — skipping"
+  when: vg_exists.rc != 0 and target_disk | default('') == ''
+
+- name: Full LVM Setup
+  block:
+    - name: Show which disk was selected
+      debug:
+        msg: "Selected disk: {{ target_disk }}"
+
+    - name: Partition newly found disk
+      community.general.parted:
+        device: "{{ target_disk }}"
+        number: 1
+        state: present
+        fs_type: xfs
+      when: not disk_has_partitions and target_disk != ''
+      ignore_errors: true
+
+    - name: Read device information from newly created partition
+      community.general.parted:
+        device: "{{ target_disk }}"
+        state: info
+      register: partition_info
+      when: target_disk != '' and target_partition == ''
+
+    - name: Show partition info
+      debug:
+        msg: "{{ partition_info.partitions }}"
+      when: target_disk != '' and target_partition == ''
+
+    - name: Set target partition dynamically
+      set_fact:
+        target_partition: "{{ target_disk }}{{ partition_info.partitions[0].num }}"
+      when: target_disk != '' and target_partition == ''
+
+    - name: Show selected disk or partition
+      debug:
+        msg: "Disk: {{ target_disk }} | Partition: {{ target_partition }}"
+
+    - name:  Create physical volume and volume group
+      community.general.lvg:
+        vg: "{{ vg_name }}"
+        pvs: "{{ target_partition }}"
+        pesize: 4
+
+    - name: Create logical volume
+      community.general.lvol:
+        vg: "{{ vg_name }}"
+        lv: "{{ lv_name }}"
+        size: "{{ lv_size }}"
+        pvs: "{{ target_partition }}"
+
+  when: vg_exists.rc != 0 and (target_disk != '' or target_partition != '')
+
+- name: Check if LV exists
+  command: lvs /dev/{{ vg_name }}/{{ lv_name }}
+  register: lv_exists
+  ignore_errors: true
+  changed_when: false
+
+- name: Create filesystem
+  community.general.filesystem:
+    fstype: "{{ fs_type }}"
+    dev: "/dev/{{ vg_name }}/{{ lv_name }}"
+  when: lv_exists.rc == 0
+
+- name: Create mount point
+  ansible.builtin.file:
+    path: "{{ mount_point }}"
+    state: directory
+    mode: '0755'
+  when: lv_exists.rc == 0  
+
+- name: Get UUID of logical volume
+  command: blkid -s UUID -o value /dev/{{ vg_name }}/{{ lv_name }}
+  register: lv_uuid
+  changed_when: false
+
+- name: Show UUID
+  debug:
+    msg: "LV UUID: {{ lv_uuid.stdout }}"            
+
+- name: Mount filesystem and edit /etc/fstab with new entry
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    src: "UUID={{ lv_uuid.stdout }}"
+    fstype: "{{ fs_type }}"
+    opts: defaults
+    state: mounted
+  when: lv_exists.rc == 0
