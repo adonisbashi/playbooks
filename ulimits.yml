@@ -9,17 +9,17 @@
         domain: ado
         limit_type: soft
         limit_item: nofile
-        value: 4096
+        value: "{{ soft_limit_value }}"
 
     - name: Add hard limit for open files for user
       community.general.pam_limits:
         domain: ado
         limit_type: hard
         limit_item: nofile
-        value: 8192
+        value: "{{ hard_limit_value }}"
 
     - name: Apply limits to current systemd user session
-      shell: systemctl restart user@{{ ansible_user_uid }}.service
+      ansible.builtin.shell: systemctl restart user@{{ ansible_user_uid }}.service
       become: true
 
 

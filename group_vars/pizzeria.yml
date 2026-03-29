@@ -21,3 +21,7 @@ max_file_value: '100000'
 # Permissions
 pizza_orders_dir: /opt/pizzeria/orders
 pizza_orders_file: /opt/pizzeria/orders/active_orders.txt
+
+# Ulimits
+soft_limit_value: 4096
+hard_limit_value: 8192

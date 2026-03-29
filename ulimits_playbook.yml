@@ -1,9 +1,0 @@
----
-- name: Ulimit modification
-  hosts: pizzeria
-  become: true
-  vars:
-    ulimit_dir: /etc/security/limits.conf
-
-  tasks:
-    - name:
