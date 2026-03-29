@@ -1,0 +1,14 @@
+- name: Create user "pizzaops" on all servers
+  ansible.builtin.user:
+    name: "{{ new_user }}"
+    comment: Pizza Operations
+    groups: wheel
+    shell: "{{ new_user_shell }}"
+    password: "{{ new_user_password }}"
+    create_home: yes
+
+- name: Deploy SSH public key for keyless entry
+  ansible.posix.authorized_key:
+    user: "{{ new_user }}"
+    state: present
+    key: "{{ lookup('file', pub_key) }}"
